@@ -1,0 +1,28 @@
+###############################
+# Syntax Coloring Map For Morse
+###############################
+
+# Determines syntax coloring rules for the Arduino IDE
+#
+# Each line has three fields:
+#    <keyword> The keyword to highlight
+#    <type>    The type of keyword
+#    <doc>     A reference to the Arduino documentation page
+#
+# See http://acsweb.ucsd.edu/~sbliven/2012/01/arduino-ide-keywords/ for
+# a good expanation of this poorly documented standar library file.
+
+# LITERAL1 specifies constants
+
+# LITERAL2 specifies built-in variables
+
+# KEYWORD1 specifies classes Classes, datatypes, and C++ keywords
+
+Morse	KEYWORD1
+
+# KEYWORD2 Methods and functions
+
+morse   		KEYWORD2
+sendMorseWord	KEYWORD2
+
+# KEYWORD3 setup and loop functions, as well as the Serial keywords

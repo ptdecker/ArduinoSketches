@@ -1,10 +1,12 @@
 
-/* Test Drive System III
+/* Test Drive System IV
  *
- * This version only provides forward throttle control with average-reading filtering
+ * This version only provides forward throttle control with mode-reading filtering.
+ *
+ * Mode-reading filtering uses the mode value of the last ten readings from the receiver.
  *
  * Use #define DEGUG to send status information to serial port
- * Use #define SMOOTH to enable average-reading filtering. If not defined, raw translation is used
+ * Use #define SMOOTH to enable filtering. If not defined, raw translation is used
  
 /*
  * Brushed motor control constants
