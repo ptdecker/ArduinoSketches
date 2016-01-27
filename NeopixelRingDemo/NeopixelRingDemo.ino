@@ -1,235 +1,113 @@
 
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 17
+#define PIN        17  // Pin to use to talk to the NeoPixel Ring
+#define BRIGHTNESS 20  // Brightness level
+#define NUMPIXELS  12  // Number of pixels in ring
 
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(32, PIN);
+#define COLOR_BLACK  0x000000
+#define COLOR_RED    0xFF0000
+#define COLOR_ORANGE 0xFF7F00
+#define COLOR_YELLOW 0xFFFF00
+#define COLOR_GREEN  0x00FF00
+#define COLOR_BLUE   0x0000FF
+#define COLOR_INDIGO 0x4B0082
+#define COLOR_VIOLET 0xEE82EE
+#define COLOR_PINK   0xFFCCCC
+#define COLOR_WHITE  0xFFFFFF
 
-uint8_t  mode      = 0;        // Current animation effect
-uint8_t  offset    = 0;        // Position of spinny eyes
-uint32_t color     = 0xff0095; // Start red
-uint32_t prevTime;
+#define FADE_IN  0
+#define FADE_OUT 1
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN);
 
 void setup() {
+    pixels.setBrightness(BRIGHTNESS);
     pixels.begin();
-    pixels.setBrightness(20);   // 1/3 brightness
-    prevTime = millis();
 }
 
 void loop() {
-   
-    uint32_t standardDelay = 1500;
-    uint32_t shortDelay    = 750;
-
-    rainbowMode();
-    rainbowMode();
-  
-    for (uint32_t loopCount =0; loopCount < 1; loopCount++) {
-        loopRoundOnce(1);
-        resetRing();
-        pulse(1);
-        resetRing();
-        delay(standardDelay);
-    }
-    
-    loopRoundOnce(2);
-    resetRing();
-    pulse(2);
-    resetRing();
-    delay(standardDelay);
-    
-    for (uint32_t loopCount =0; loopCount < 1; loopCount++) {
-        loopRoundOnce(1);
-        resetRing();
-        pulse(1);
-        resetRing();
-        delay(standardDelay);
-   }
- 
-   loopRoundOnce(2);
-   resetRing();
-   pulse(2);
-   resetRing();
-   delay(shortDelay);
-
-   rainbowMode();
-   delay(shortDelay);
-   rainbowMode();
-   delay(shortDelay);
-   rainbowMode();
-   delay(shortDelay);
-
-}
-
-void endSequence() {
-    while(1) {
-        delay(10000);
-    } 
-}
-
-void rainbowMode() {
-
-    // Place on 5 lights at a time, each new light lit will be a from an index of a rainbow array
-
-    uint32_t color[] = {
-        0xff0000,
-        0xff7f00,
-        0xffff00,
-        0x00ff00, 
-        0x0000ff, 
-        0x4b0082, 
-        0x8f00ff
-    };
-
-    for(uint32_t i=0; i<24; i++) {
-      
-        // The current pixel is always the same colour
-        // It's the last X colours which are different
-
-        pixels.setPixelColor(i, color[0]);       
-
-        if (i>0) {
-          pixels.setPixelColor(i-1, color[1]);       
-        }
-
-        if (i>1) {
-          pixels.setPixelColor(i-2, color[2]);       
-        }
-
-        if (i>2) {
-            pixels.setPixelColor(i-3, color[3]);       
-        }
-
-        if (i>3) {
-            pixels.setPixelColor(i-4, color[4]);       
-        }
-
-        if (i>4) {
-            pixels.setPixelColor(i-5, color[5]);       
-        }
-
-        pixels.setPixelColor(i-6, 0);
-        pixels.show(); 
-        delay(100); 
-    }
-
-    // Then hide the last 3 in reverse order
-    pixels.setPixelColor(18, 0);    
-    pixels.show(); 
-    delay(100);  
-    pixels.setPixelColor(19, 0);    
-    pixels.show(); 
-    delay(100);  
-    pixels.setPixelColor(20, 0);    
-    pixels.show(); 
-    delay(100);  
-    pixels.setPixelColor(21, 0);    
-    pixels.show(); 
-    delay(100);    
-    pixels.setPixelColor(22, 0);       
-    pixels.show(); 
-    delay(100); 
-    pixels.setPixelColor(23, 0);       
-    pixels.show(); 
-    delay(100); 
-
-}
-
-void pulse(uint32_t colorGood) {
-  
-    if (colorGood == 1) {
-      
-        // Up
-        for (uint32_t b=0; b<30; b++) {
-            for(uint32_t i=0; i<24; i++) {
-                pixels.setPixelColor(i, 0xffffff);
-                pixels.setBrightness(b);
-            }
-            pixels.show();
-            delay(50);   
-        }
-
-        // down
-        for (uint32_t d=30; d>0; d--) {
-            for(uint32_t j=0; j<24; j++) {
-                pixels.setPixelColor(j, 0xffffff);   
-                pixels.setBrightness(d);
-            }
-            pixels.show();
-            delay(50);   
-        }
-
-        for(uint32_t i=0; i<24; i++) {
-            pixels.setPixelColor(i, 0);   
-            pixels.setBrightness(0);
-            pixels.show();
-        }
-        
-    } else {
-      
-       // Up
-       for (uint32_t b=0; b<30; b++) {
-            for(uint32_t i=0; i<24; i++) {
-                pixels.setPixelColor(i, 0xff0000);
-                pixels.setBrightness(b);
-            }
-            pixels.show();
-            delay(50);   
-        }
-
-        // down
-        for (uint32_t d=30; d>0; d--) {
-            for(uint32_t j=0; j<24; j++) {
-                pixels.setPixelColor(j, 0xff0000);   
-                pixels.setBrightness(d);
-            }
-            pixels.show();
-            delay(50);   
-        }
-
-        // reset
-        for(uint32_t i=0; i<24; i++) {
-            pixels.setPixelColor(i, 0);   
-            pixels.setBrightness(0);
-            pixels.show();
-        }
-    }
+    rainbow();
+    rainbow();
+    loopAround(COLOR_RED);
+    loopAround(COLOR_GREEN);
+    loopAround(COLOR_BLUE);
+    loopAround(COLOR_WHITE);
+    pulse(COLOR_RED);
+    pulse(COLOR_GREEN);
+    pulse(COLOR_BLUE);
+    pulse(COLOR_WHITE);
 }
 
 void resetRing() {
-    for(uint32_t i=0; i<24; i++) {
-        pixels.setPixelColor(i, 0);   
-        pixels.setBrightness(30);
+    for(int pixel = 0; pixel < NUMPIXELS; pixel++) {
+        pixels.setPixelColor(pixel, COLOR_BLACK);
+        pixels.setBrightness(BRIGHTNESS);
     }
     pixels.show();
 }
 
-void loopRoundOnce(uint32_t colorGood) {
-    if (colorGood == 1) {
-        for(uint32_t i=0; i<24; i++) {
-            if (i>0) {
-                pixels.setPixelColor((i-1), 0);     
-            }
-            pixels.setPixelColor(i, 0xffffff);       
-            pixels.show(); 
-            delay(100); 
-        }
-        for(uint32_t i=0; i<24; i++) {
-            pixels.setPixelColor(i, 0);   
-        }  
-        pixels.show() 
-    } else {
-        for(uint32_t i=0; i<24; i++) {
-            if (i>0) {
-                pixels.setPixelColor((i-1), 0);     
-            }
-            pixels.setPixelColor(i, 0xff0000);       
-            pixels.show(); 
-            delay(100); 
-        }
-        for(uint32_t i=0; i<24; i++) {
-            pixels.setPixelColor(i, 0);   
-        }  
+void rainbow() {
+
+    static int modeDelay = 100;
+    static uint32_t color[] = {
+        COLOR_RED,
+        COLOR_ORANGE,
+        COLOR_YELLOW,
+        COLOR_GREEN, 
+        COLOR_BLUE, 
+        COLOR_INDIGO, 
+        COLOR_VIOLET
+    };
+
+    for(int pixel = 0; pixel < NUMPIXELS; pixel++) {
+        pixels.setPixelColor(pixel, color[0]);
+        for (int i = 0; i < 5; i++)
+            if (pixel > i) pixels.setPixelColor(pixel - i - 1, color[i + 1]);
+        pixels.setPixelColor(pixel - 6, COLOR_BLACK);
+        pixels.show(); 
+        delay(modeDelay); 
+    }
+
+    for(int pixel = 6; pixel > 0; pixel--) {
+        pixels.setPixelColor(NUMPIXELS - pixel, COLOR_BLACK);    
         pixels.show();
-    } 
+        delay(modeDelay);        
+    }
+
+    resetRing();
+}
+
+void fade(uint32_t color, int fade, int delayBy) {
+    int level;
+    for (level = (fade ? BRIGHTNESS : 0); (fade ? (level > 0) : (level < BRIGHTNESS)); level = level + (fade ? -1 : 1)) {
+        for(int pixel = 0; pixel < NUMPIXELS; pixel++) {
+            pixels.setPixelColor(pixel, color);
+            pixels.setBrightness(level);
+        }
+        pixels.show();
+        delay(delayBy);
+    }
+}
+
+// Pulse the ring with a specified color
+
+void pulse(uint32_t color) {
+    static int modeDelay = 50;
+    fade(color, FADE_IN, modeDelay);
+    fade(color, FADE_OUT, modeDelay);
+    resetRing();       
+}
+
+// Loop around the ring once with a specified color
+
+void loopAround(uint32_t color) {
+    static int modeDelay = 100;
+    for(uint32_t pixel = 0; pixel < NUMPIXELS; pixel++) {
+        if (pixel > 0) pixels.setPixelColor(pixel - 1, COLOR_BLACK);
+        pixels.setPixelColor(pixel, color);       
+        pixels.show();
+        delay(modeDelay); 
+    }
+    resetRing();
 }
