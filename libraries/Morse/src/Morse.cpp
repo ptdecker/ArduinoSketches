@@ -18,6 +18,7 @@
  * TODO: sound
  * TODO: specials
  * TODO: dynamic word speed
+ * TODO: decoding
  */
 
 #include "Arduino.h"
