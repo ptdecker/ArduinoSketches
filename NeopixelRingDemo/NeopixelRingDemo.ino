@@ -1,9 +1,20 @@
 
+/*
+ * Demonstrate the NeoPixel Ring in action 
+ * 
+ * NOTE: The inspiration and original source for this demo came from 'energeticspark'. The original work can be found
+ *       here: https://github.com/energeticspark/Neopixel-Ring.  This version is simplified and streamlined a bit.
+ */
+
 #include <Adafruit_NeoPixel.h>
+
+// Implementation specific settings
 
 #define PIN        17  // Pin to use to talk to the NeoPixel Ring
 #define BRIGHTNESS 20  // Brightness level
 #define NUMPIXELS  12  // Number of pixels in ring
+
+// Define our color patterns
 
 #define COLOR_BLACK  0x000000
 #define COLOR_RED    0xFF0000
@@ -16,15 +27,23 @@
 #define COLOR_PINK   0xFFCCCC
 #define COLOR_WHITE  0xFFFFFF
 
+// Constants for fade function
+
 #define FADE_IN  0
 #define FADE_OUT 1
 
+// Initialize NeoPixel library
+
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN);
+
+// Set things up
 
 void setup() {
     pixels.setBrightness(BRIGHTNESS);
     pixels.begin();
 }
+
+// Sketch event loop
 
 void loop() {
     rainbow();
@@ -39,6 +58,8 @@ void loop() {
     pulse(COLOR_WHITE);
 }
 
+// Reset all pixels in the ring to black (i.e. off)
+
 void resetRing() {
     for(int pixel = 0; pixel < NUMPIXELS; pixel++) {
         pixels.setPixelColor(pixel, COLOR_BLACK);
@@ -46,6 +67,8 @@ void resetRing() {
     }
     pixels.show();
 }
+
+// Generate a rainbow chase light effect
 
 void rainbow() {
 
@@ -77,6 +100,8 @@ void rainbow() {
 
     resetRing();
 }
+
+// Helper function for 'pulse' that either fades in or out all the pixels
 
 void fade(uint32_t color, int fade, int delayBy) {
     int level;
