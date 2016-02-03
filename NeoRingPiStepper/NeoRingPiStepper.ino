@@ -24,7 +24,7 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, NEOPIN);
 int pos = 0;
 
 void setup() {
-  HWSERIAL.begin(9600);
+  HWSERIAL.begin(38400);
   pixels.setBrightness(BRIGHTNESS);
   pixels.begin();
   pos = 0;
@@ -34,8 +34,8 @@ void loop() {
   int incomingByte;
   if (HWSERIAL.available() > 0) {
     incomingByte = HWSERIAL.read();
-    HWSERIAL.println();    
-    HWSERIAL.print("Advanced to position: ");
+//    HWSERIAL.println();    
+//    HWSERIAL.print("Advanced to position: ");
     HWSERIAL.println(pos);
     pixels.setPixelColor(pos, COLOR_BLACK);
     pos++;
