@@ -1,5 +1,18 @@
 
+/*
+ * TeensyPixel1939
+ * 
+ * Firmware for a Teensy-LC to drive NeoPixels under the direction of
+ * a Raspberry Pi communicating via serial using a JSON-formatted 
+ * protocol.
+ * 
+ * Library Documentation:
+ *      - https://github.com/bblanchon/ArduinoJson/wiki
+ *      - https://github.com/adafruit/Adafruit_NeoPixel
+ */
+
 #include <Adafruit_NeoPixel.h>
+#include <ArduinoJson.h>
 
 #define NEOPIN     17
 #define NUMPIXELS  12
@@ -21,6 +34,8 @@
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, NEOPIN);
 
+StaticJsonBuffer<200> jsonBuffer;
+
 int pos = 0;
 
 void setup() {
@@ -31,12 +46,22 @@ void setup() {
 }
 
 void loop() {
+  
   int incomingByte;
+  String numPixelsStr = "";
+  
   if (HWSERIAL.available() > 0) {
     incomingByte = HWSERIAL.read();
-//    HWSERIAL.println();
-//    HWSERIAL.print("Advanced to position: ");
-    HWSERIAL.println(pos);
+
+    // Return health check results in JSON
+
+    numPixelsStr = String(pixels.numPixels());
+    JsonObject& root = jsonBuffer.createObject();
+    root["name"] = "TeensyPixel1939";
+    root["version"] = "0.0.1";
+    root["numPixels"] = numPixelsStr;
+    root.printTo(HWSERIAL);
+    
     pixels.setPixelColor(pos, COLOR_BLACK);
     pos++;
     if (pos == NUMPIXELS) 
